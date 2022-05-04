@@ -15,7 +15,7 @@ jobs:
     - name: Checkout target repo
       uses: actions/checkout@v2
       with:
-        ref: upstream
+        ref: main
         persist-credentials: false
 
     - name: Rebase upstream changes
@@ -28,7 +28,7 @@ jobs:
         upstream_sync_repo: hlb-online/windows_exporter
         git_config_pull_rebase: true
 
-        test_mode: false
+        test_mode: true
 
     - name: New commits found
       if: steps.sync.outputs.has_new_commits == 'true'
