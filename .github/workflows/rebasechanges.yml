@@ -1,0 +1,42 @@
+name: 'Rebase our fork'
+
+on:
+  push:
+    branches:
+      - upstream
+  workflow_dispatch:
+
+jobs:
+  rebase-fork:
+    runs-on: ubuntu-latest
+    name: Rebase our changes onto upstream
+
+    steps:
+    - name: Checkout target repo
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        persist-credentials: false
+
+    - name: Rebase upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.2
+      with:
+        target_sync_branch: main
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: upstream
+        upstream_sync_repo: hlb-online/windows_exporter
+        git_config_pull_rebase: true
+
+        test_mode: false
+
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}
