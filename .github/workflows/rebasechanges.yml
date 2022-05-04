@@ -28,7 +28,7 @@ jobs:
         upstream_sync_repo: hlb-online/windows_exporter
         git_config_pull_rebase: true
 
-        test_mode: true
+        test_mode: false
 
     - name: New commits found
       if: steps.sync.outputs.has_new_commits == 'true'
