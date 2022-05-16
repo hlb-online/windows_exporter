@@ -28,6 +28,7 @@ jobs:
         upstream_sync_branch: upstream
         upstream_sync_repo: hlb-online/windows_exporter
         git_config_pull_rebase: true
+        target_push_args: '--force'
 
         test_mode: false
 
