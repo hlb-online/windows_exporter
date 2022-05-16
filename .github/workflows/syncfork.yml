@@ -23,6 +23,8 @@ jobs:
         ref: upstream
         # REQUIRED if your upstream repo is private (see wiki)
         persist-credentials: false
+        # Full history to allow merging even with many new commits
+        fetch-depth: 0
 
     # REQUIRED step
     # Step 2: run the sync action
