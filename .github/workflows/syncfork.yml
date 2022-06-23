@@ -9,8 +9,10 @@ on:
 
 jobs:
   sync-upstream:
-    runs-on: ubuntu-latest
     name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+    outputs:
+      upstream-had-new-commits: "${{ steps.sync.outputs.has_new_commits }}"
 
     steps:
     # REQUIRED step
@@ -53,3 +55,42 @@ jobs:
 
     - name: Show value of 'has_new_commits'
       run: echo ${{ steps.sync.outputs.has_new_commits }}
+
+  rebase-fork:
+    name: Rebase our changes onto upstream
+    runs-on: ubuntu-latest
+    needs: sync-upstream
+    if: needs.sync-upstream.outputs.upstream-had-new-commits == 'true'
+
+    steps:
+    - name: Checkout target repo
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        persist-credentials: false
+        fetch-depth: 0
+
+    - name: Rebase upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.0
+      with:
+        target_sync_branch: main
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: upstream
+        upstream_sync_repo: hlb-online/windows_exporter
+        git_config_pull_rebase: true
+        target_push_args: '--force'
+        target_branch_push_args: '--force'
+        test_mode: false
+
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}
+
