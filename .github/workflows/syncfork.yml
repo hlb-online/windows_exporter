@@ -29,7 +29,6 @@ jobs:
         ref: upstream
         # Full history to allow merging even with many new commits
         fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
 
     # REQUIRED step
     # Step 2: run the sync action
@@ -39,7 +38,7 @@ jobs:
       with:
         target_sync_branch: upstream
         # REQUIRED 'target_repo_token' exactly like this!
-        # target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
         upstream_sync_branch: master
         upstream_sync_repo: prometheus-community/windows_exporter
         upstream_pull_args: --tags # Make sure we pull tags as well so we know when a new release is out
