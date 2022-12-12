@@ -7,6 +7,10 @@ on:
 
   workflow_dispatch:  # click the button on Github repo!
 
+# Required so we can push changes from upstream even if they changed their CI files
+permissions:
+  actions: write
+
 jobs:
   sync-upstream:
     name: Sync latest commits from upstream repo
